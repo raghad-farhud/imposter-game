@@ -24,6 +24,7 @@
             </div>
         </div>
         <div id="vote-container" class="hidden bg-gray-800 rounded-lg p-4" style="min-height: 50vh;">
+            <h2 class="text-3xl border-b border-gray-600 pb-2">Question: <span id="currentQuestion" class="font-bold"></span></h2>
             <h2 class="text-3xl border-b border-gray-600 pb-2"><span id="currentVoter" class="font-bold text-blue-400"></span></h2>
             <p class="font-bold text-xl mt-6 mb-6">Who do you think is the imposter?</p>
             <ul id="voteList" class="mt-6 flex flex-col gap-2 text-xl"></ul>
@@ -75,6 +76,7 @@
         function startVoting() {
             document.getElementById("game-container").classList.add("hidden");
             document.getElementById("vote-container").classList.remove("hidden");
+            document.getElementById("currentQuestion").textContent = questions[currentQuestion].normal;
             document.getElementById("voteList").innerHTML = "";
             document.getElementById('currentVoter').textContent = players[currentPlayer].name;
             document.getElementById("voteList").innerHTML = players.map(player => `<li class="cursor-pointer bg-gray-700 hover:bg-gray-600 focus:bg-gray-600 rounded-lg p-2 px-4 border-2 border-gray-600" onclick="vote(${player.id})">${player.name}</li>`).join("");
