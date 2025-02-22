@@ -60,7 +60,7 @@
             const id = generateId();
             if (name.trim()) {
                 players.push({id: id, name: name});
-                document.getElementById("playerList").innerHTML += `<li class="player-item bg-gray-900 rounded-lg p-2 px-2 border-b border-gray-700 flex justify-between items-center items-center mb-1">${player.name} <button class="border border-gray-600 text-white rounded-lg p-1 px-5 font-bold mt-0" onclick="removePlayer(${player.id})"><i class="fa-solid fa-trash"></i></button></li>`;
+                document.getElementById("playerList").innerHTML += `<li class="player-item bg-gray-900 rounded-lg p-2 px-2 border-b border-gray-700 flex justify-between items-center items-center mb-1">${name} <button class="border border-gray-600 text-white rounded-lg p-1 px-5 font-bold mt-0" onclick="removePlayer(${id})"><i class="fa-solid fa-trash"></i></button></li>`;
                 document.getElementById("playerInput").value = "";
                 savedPlayers.push({id: id, name: name, points: 0});
                 localStorage.setItem("players", JSON.stringify(savedPlayers));
