@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,25 +9,41 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="relative bg-gray-900 text-white min-h-screen w-full">
-    <h1 class="text-3xl font-bold text-blue-500 rounded-lg p-1 mb-4">Questions<i class="fa-solid fa-question ml-2"></i></h1>
+    <h1 class="text-3xl font-bold text-blue-500 rounded-lg p-1 mb-4">Questions<i class="fa-solid fa-question ml-2"></i>
+    </h1>
     <div id="questionHome" class="bg-gray-800 rounded-lg p-3 flex justify-between items-center">
-        <a href="index.html" >Home</a>
+        <a href="index.html">Home</a>
         <span id="questionCount" class="bg-blue-700 rounded-full text-sm px-2 py-1 ml-2"></span>
     </div>
     <div id="questions" class="bg-gray-800 rounded-lg p-3 py-6 mt-5 px-10">
         <div class="flex flex-col gap-1">
             <div class="question-item bg-gray-700 rounded-lg px-2 mb-2 border border-blue-500">
-                <input class="w-full bg-transparent h-full focus:outline-none py-2" type="text" id="questionInput" placeholder="Enter the Normal Question">
+                <input class="w-full bg-transparent h-full focus:outline-none py-2" type="text" id="questionInput"
+                    placeholder="Enter the Normal Question">
             </div>
             <div class="question-item bg-gray-700 rounded-lg px-2 mb-2 border border-red-700">
-                <input class="w-full bg-transparent h-full focus:outline-none py-2" type="text" id="questionInputImposter" placeholder="Enter the Imposter Question">
+                <input class="w-full bg-transparent h-full focus:outline-none py-2" type="text"
+                    id="questionInputImposter" placeholder="Enter the Imposter Question">
             </div>
-            <button onclick="addQuestion()" class="bg-blue-500 text-white rounded-lg p-2 px-5 font-bold mb-4 w-full">Add Question</button>
+            <button id="addQuestionButton" onclick="addQuestion()" class="bg-blue-500 text-white rounded-lg p-2 px-5 font-bold mb-4 w-full">Add
+                Question</button>
+            <button id="editQuestionButton" class="hidden bg-blue-500 text-white rounded-lg p-2 px-5 font-bold mb-4 w-full">Edit
+                Question</button>
         </div>
         <div id="questionList"></div>
-        <a href="index.html" class="border-2 border-blue-500 text-white rounded-lg p-2 px-5 font-bold mt-4 block w-full"><i class="fa-solid fa-house mr-2"></i>Home</a>
-        <button onclick="removeAllQuestions()" class="bg-red-500 text-white rounded-lg p-2 px-5 font-bold mt-4 w-full">Remove All Questions</button>
+        <button onclick="importQuestions()"
+            class="border-2 border-blue-500 text-white rounded-lg p-2 px-5 font-bold mt-6 block w-full">Import
+            Questions</button>
+        <textarea id="importQuestions" class="hidden w-full bg-gray-700 rounded-lg p-2 px-5 font-bold mb-4"></textarea>
+        <button id="importQuestionsButton"
+            class="hidden bg-blue-500 text-white rounded-lg p-2 px-5 font-bold mb-4 w-full">Import Questions</button>
+        <a href="index.html"
+            class="border-2 border-blue-500 text-white rounded-lg p-2 px-5 font-bold mt-4 block w-full"><i
+                class="fa-solid fa-house mr-2"></i>Home</a>
+        <button onclick="removeAllQuestions()"
+            class="bg-red-500 text-white rounded-lg p-2 px-5 font-bold mt-4 w-full">Remove All Questions</button>
     </div>
 
     <script>
@@ -39,9 +56,10 @@
                 document.getElementById("questionList").innerHTML += `
                 <div class="question-item bg-gray-700 rounded-lg px-2 mb-2 p-1 flex justify-between" id='${question.id}'>
                     <div>
-                        <p class=''>- ${question.normal}</p>
-                        <p class='text-red-400'>- ${question.imposter}</p>
+                        <p class='text-start'>- ${question.normal}</p>
+                        <p class='text-red-400 text-start'>- ${question.imposter}</p>
                     </div>
+                    <button onclick="editQuestion(${question.id})" class="ml-auto mr-1 border border-gray-600 text-white rounded-lg px-4 font-bold"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button onclick="removeQuestion(${question.id})" class="border border-gray-600 text-white rounded-lg px-4 font-bold"><i class="fa-solid fa-trash"></i></button>
                 </div>
                 `;
@@ -56,17 +74,21 @@
             do {
                 id = Math.floor(Math.random() * 1000000);
             } while (questions.some(question => question.id === id));
-            questions.push({id: id, normal: questionNormal, imposter: questionImposter});
+            questions.push({ id: id, normal: questionNormal, imposter: questionImposter });
             localStorage.setItem("questions", JSON.stringify(questions));
-            document.getElementById("questionList").innerHTML += `
-            <div class="question-item bg-gray-700 rounded-lg px-2 mb-2 p-1 flex justify-between" id='${question.id}'>
-                    <div>
-                        <p class=''>- ${question.normal}</p>
-                        <p class='text-red-400'>- ${question.imposter}</p>
+            document.getElementById("questionList").innerHTML = "";
+            questions.forEach(question => {
+                document.getElementById("questionList").innerHTML += `
+                <div class="question-item bg-gray-700 rounded-lg px-2 mb-2 p-1 flex justify-between" id='${question.id}'>
+                        <div>
+                            <p class='text-start'>- ${question.normal}</p>
+                        <p class='text-red-400 text-start'>- ${question.imposter}</p>
                     </div>
-                    <button onclick="removeQuestion(${question.id})" class="border border-gray-600 text-white rounded-lg px-4 font-bold"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="editQuestion(${question.id})" class="ml-auto mr-1 border border-gray-600 text-white rounded-lg px-4 font-bold"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="removeQuestion(${question.id})" class="border border-gray-600 text-white rounded-lg px-4 font-bold"><i class="fa-solid fa-trash"></i></button>
                 </div>
-            `;
+                `;
+            });
             document.getElementById("questionInput").value = "";
             document.getElementById("questionInputImposter").value = "";
             document.getElementById("questionCount").textContent = questions.length + " Questions";
@@ -76,17 +98,48 @@
             questions = questions.filter(q => q.id !== id);
             localStorage.setItem("questions", JSON.stringify(questions));
             document.getElementById("questionList").innerHTML = "";
-            questions.forEach(q => {
+            questions.forEach(question => {
                 document.getElementById("questionList").innerHTML += `
                 <div class="question-item bg-gray-700 rounded-lg px-2 mb-2 p-1 flex justify-between" id='${question.id}'>
                     <div>
                         <p class=''>- ${question.normal}</p>
                         <p class='text-red-400'>- ${question.imposter}</p>
                     </div>
+                    <button onclick="editQuestion(${question.id})" class="ml-auto mr-1 border border-gray-600 text-white rounded-lg px-4 font-bold"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button onclick="removeQuestion(${question.id})" class="border border-gray-600 text-white rounded-lg px-4 font-bold"><i class="fa-solid fa-trash"></i></button>
                 </div>
                 `;
             });
+        }
+
+        function editQuestion(id) {
+            const question = questions.find(q => q.id === id);
+            document.getElementById("questionInput").value = question.normal;
+            document.getElementById("questionInputImposter").value = question.imposter;
+            document.getElementById("addQuestionButton").classList.add("hidden");
+            document.getElementById("editQuestionButton").classList.remove("hidden");
+            document.getElementById("editQuestionButton").addEventListener("click", () => {
+                question.normal = document.getElementById("questionInput").value;
+                question.imposter = document.getElementById("questionInputImposter").value;
+                questions = questions.map(q => q.id === id ? question : q);
+                localStorage.setItem("questions", JSON.stringify(questions));
+                document.getElementById("questionList").innerHTML = "";
+                questions.forEach(question => {
+                    document.getElementById("questionList").innerHTML += `
+                    <div class="question-item bg-gray-700 rounded-lg px-2 mb-2 p-1 flex justify-between" id='${question.id}'>
+                    <div>
+                        <p class=''>- ${question.normal}</p>
+                        <p class='text-red-400'>- ${question.imposter}</p>
+                    </div>
+                        <button onclick="editQuestion(${question.id})" class="ml-auto mr-1 border border-gray-600 text-white rounded-lg px-4 font-bold"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="removeQuestion(${question.id})" class="border border-gray-600 text-white rounded-lg px-4 font-bold"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    `;
+                });
+                document.getElementById("addQuestionButton").classList.remove("hidden");
+                document.getElementById("editQuestionButton").classList.add("hidden");
+            });
+
         }
 
         function removeAllQuestions() {
@@ -94,6 +147,24 @@
             localStorage.setItem("questions", JSON.stringify(questions));
             document.getElementById("questionList").innerHTML = "";
         }
+
+        function importQuestions() {
+            document.getElementById("importQuestions").classList.remove("hidden");
+            document.getElementById("importQuestionsButton").classList.remove("hidden");
+            // here we should add an array of questions to the textarea, each items in array is object with normal and imposter properties, after click add, we generate ids for each question and add them to the array, then we save the array to the local storage
+            document.getElementById("importQuestionsButton").addEventListener("click", () => {
+                const questionsText = JSON.parse(document.getElementById("importQuestions").value);
+                questionsText.forEach(question => {
+                    question.id = Math.floor(Math.random() * 1000000);
+                });
+                localStorage.setItem("questions", JSON.stringify(questionsText));
+                questions = questionsText;
+                console.log(questions);
+                document.getElementById("importQuestions").classList.add("hidden");
+                document.getElementById("importQuestionsButton").classList.add("hidden");
+            });
+        }
     </script>
 </body>
+
 </html>
