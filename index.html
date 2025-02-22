@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imposter Game</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="relative bg-gray-900 text-white min-h-screen w-full">
+    <h1 class="text-3xl font-bold text-blue-500 rounded-lg p-1 mb-4">Imposter Game</h1>
+    <div id='questionHome' class="bg-gray-800 rounded-lg p-3">
+        <a href="questions.html">Questions Manager</a>
+        <span id='questionCount' class="bg-blue-700 rounded-full text-sm px-2 py-1 ml-2"></span>
+    </div>
+    <div id="setup" class="bg-gray-800 rounded-lg rounded-b-none p-3 mt-5 px-10">
+        <h2 class="text-xl font-bold text-blue-500 mb-4">Enter Player Names</h2>
+        <div class="flex flex-row gap-1 items-center mb-8 justify-stretch w-full">
+            <input type="text" id="playerInput" placeholder="Player Name" class="bg-gray-700 rounded-lg border border-gray-600 w-full p-2 focus:outline-blue-500">
+            <button onclick="addPlayer()" class="bg-blue-500 text-white border border-blue-600 rounded-lg p-2 px-5 font-bold "> + </button>
+        </div>
+        <ul id="playerList" class="mb-2 text-start flex flex-col"></ul>
+    </div>
+    <a href="game.html" id="startGame" class="block bg-blue-500 text-white font-bold sticky bottom-0 rounded-lg rounded-t-none p-2 mb-2">Start Game</>
+
+    <script>
+        let players = [];
+        let questions = [];
+
+        let savedPlayers = [];
+        if (localStorage.getItem("players")) {
+            savedPlayers = JSON.parse(localStorage.getItem("players"));
+            players = savedPlayers;
+            console.log(players)
+            document.getElementById("playerList").innerHTML = players.map(player => `<li class="player-item bg-gray-900 rounded-lg p-2 px-2 border-b border-gray-700 flex justify-between items-center items-center mb-1">${player.name} <button class="border border-gray-600 text-white rounded-lg p-1 px-5 font-bold mt-0" onclick="removePlayer(${player.id})"><i class="fa-solid fa-trash"></i></button></li>`).join("");
+        }
+        
+        if (localStorage.getItem("questions")) {
+            questions = JSON.parse(localStorage.getItem("questions"));
+            document.getElementById("questionCount").textContent = questions.length + " Questions";
+        } else {
+            document.getElementById("questionCount").textContent = "0 Questions";
+        }
+
+        function removePlayer(id) {
+            players = players.filter(player => player.id !== id);
+            savedPlayers = savedPlayers.filter(player => player.id !== id);
+            console.log(id, savedPlayers, players)
+            localStorage.setItem("players", JSON.stringify(savedPlayers));
+            document.getElementById("playerList").innerHTML = players.map(player => `<li class="player-item bg-gray-900 rounded-lg p-2 px-2 border-b border-gray-700 flex justify-between items-center items-center mb-1">${player.name} <button class="border border-gray-600 text-white rounded-lg p-1 px-5 font-bold mt-0" onclick="removePlayer(${player.id})"><i class="fa-solid fa-trash"></i></button></li>`).join("");
+        }
+
+        function addPlayer() {
+            const name = document.getElementById("playerInput").value;
+            const id = generateId();
+            if (name.trim()) {
+                players.push({id: id, name: name});
+                document.getElementById("playerList").innerHTML += `<li class="player-item bg-gray-900 rounded-lg p-2 px-2 border-b border-gray-700 flex justify-between items-center items-center mb-1">${player.name} <button class="border border-gray-600 text-white rounded-lg p-1 px-5 font-bold mt-0" onclick="removePlayer(${player.id})"><i class="fa-solid fa-trash"></i></button></li>`;
+                document.getElementById("playerInput").value = "";
+                savedPlayers.push({id: id, name: name, points: 0});
+                localStorage.setItem("players", JSON.stringify(savedPlayers));
+            }
+        }
+
+        function generateId() {
+            return Math.floor(Math.random() * 1000000);
+        }
+    </script>
+</body>
+</html>
